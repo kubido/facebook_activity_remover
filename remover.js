@@ -8,12 +8,12 @@ remover.elementIdentifier = {
 }
 
 remover.run = function(){ 
-  remover.inititalizeElements();
+  remover.initializeElements();
   remover.runIntervalDeleteJob();
 }
 
 
-remover.inititalizeElements = function() {
+remover.initializeElements = function() {
   elements = document.getElementsByClassName(remover.elementIdentifier.actionContainer);
   for(i = 0; i < elements.length; i++) { 
     link = elements[i].children[0].children[1].children[0]

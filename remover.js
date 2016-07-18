@@ -2,9 +2,8 @@ window.facebookActivityRemover || (window.facebookActivityRemover = {});
 
 remover = facebookActivityRemover
 remover.elementIdentifier = {
-  actionContainer:    '_51m- vTop _5ep7',
-  activityDeleteForm: 'form[action*=\'/delete\']',
-  confirmationLink:   'a[ajaxify*=\'timeline/delete\']'
+  actionContainer:    'a[aria-label="Story options"]',
+  confirmationLink:   'a[data-feed-option-name="FeedDeleteOption"]'
 }
 
 remover.run = function(){ 
@@ -12,44 +11,32 @@ remover.run = function(){
   remover.runIntervalDeleteJob();
 }
 
-
 remover.initializeElements = function() {
-  elements = document.getElementsByClassName(remover.elementIdentifier.actionContainer);
-  for(i = 0; i < elements.length; i++) { 
-    link = elements[i].children[0].children[1].children[0]
-    link.click()
+  console.log("initializeElements")
+  elements = document.querySelectorAll(remover.elementIdentifier.actionContainer);
+  for (var i = 0; i <= elements.length-1; i++) {
+    console.log(i)
+    elements[i].click()
   }
 }
 
-remover.getDeleteActivityForm = function(){
-  forms = document.querySelectorAll(remover.elementIdentifier.activityDeleteForm);
-  return forms
-}
-
-remover.submitDeleteActivityForm = function() {
-  setTimeout(function () {
-    forms = remover.getDeleteActivityForm()
-    for(i = 0; i < forms.length; i++) { 
-      forms[i].children[3].children[1].click();
-      console.log(i+" status: delete form submitted")
-    }
-  }, 2000)
-}
-
 remover.runIntervalDeleteJob = function(){
-  var i = 0; deleteLinks = remover.deleteLinks();
-
-  var intervalId = setInterval(function () {
-      deleteLinks[i].click();
-      console.log(i+" status: link clicked")
-      i++;
-      if (i <= deleteLinks.length) {
-         remover.submitDeleteActivityForm(deleteLinks, i)
-      }
-   }, 2500)
-  if(i == deleteLinks.length){clearInterval(intervalId)}  
+  elements = document.querySelectorAll(remover.elementIdentifier.confirmationLink);
+  for (var i = 1; i <= elements.length; i++) {
+    console.log('runIntervalDeleteJob ' + i);
+    (function(index) {
+        console.log(index)
+        setTimeout(function() { remover.removeAction(index ,elements[index]) }, index * 1000);
+    })(i);
+  }
 }
 
-remover.deleteLinks = function(){
-  return document.querySelectorAll(remover.elementIdentifier.confirmationLink)  
+remover.removeAction = function(idx, element){
+  link = elements[idx].click();
+  console.log(idx+" delete link clicked")
+  setTimeout(function() { 
+    removeBtn = document.getElementsByClassName('layerConfirm')[0]
+    removeBtn.click()
+    console.log("confirmation delete link clicked")
+  }, idx * 1000);
 }
